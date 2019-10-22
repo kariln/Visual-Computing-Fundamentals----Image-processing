@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import os
 
 image_output_dir = "image_processed"
@@ -19,8 +20,17 @@ def greyscale(im):
     Returns:
         im ([type]): [np.array of shape [H, W]]
     """
+	
     # YOUR CODE HERE
-    return im
+    rgb_weights= np.array([0.212, 0.7152, 0.0722])
+    x,y,_ = np.shape(im)
+    img = np.zeros([x,y])
+	
+    for i in range(x):
+        for j in range(y):
+            img[i,j] = im[i,j].dot(rgb_weights)
+			
+    return img
 
 
 def inverse(im):
@@ -31,9 +41,14 @@ def inverse(im):
     
     Returns:
         im ([type]): [np.array of shape [H, W]]
-    """    
-     # YOUR CODE HERE
-    return im
+    """    	   
+    x,y = np.shape(im)
+    img = np.zeros([x,y])
+	
+    for i in range(x):
+        for j in range(y):
+            img[i,j] = 255 - im[i,j]
+    return img
 
 
 if __name__ == "__main__":

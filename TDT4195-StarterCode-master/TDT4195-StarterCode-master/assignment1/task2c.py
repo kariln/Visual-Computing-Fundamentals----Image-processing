@@ -2,6 +2,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 from task2ab import save_im
+import numpy as np
 
 
 def convolve_im(im, kernel):
@@ -9,13 +10,27 @@ def convolve_im(im, kernel):
     
     Args:
         im ([type]): [np.array of shape [H, W, 3]]
-        kernel ([type]): [np.array of shape [K, K]]
+        kernel ([type]): [np.array of shape [K, L]]
     
     Returns:
         [type]: [np.array of shape [H, W, 3]. should be same as im]
     """
-    # YOUR CODE HERE
-    return im
+    y,x,_ = im.shape 
+    m,n   = kernel.shape
+
+    new_img = np.zeros_like(im)
+    
+    if (m == n):
+        n = m//2
+  
+        for i in range(n,y-n):
+            for j in range(n,x-n):
+                for c in range(3):
+                    new_img[i][j][c] = np.sum(im[i-n:i+n+1, j-n:j+n+1, c]*kernel)	 
+    return new_img
+   
+
+
 
 
 if __name__ == "__main__":

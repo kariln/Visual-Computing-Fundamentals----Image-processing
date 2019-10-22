@@ -5,7 +5,6 @@ import utils
 
 torch.random.manual_seed(0)
 
-
 class Trainer:
 
     def __init__(self,
