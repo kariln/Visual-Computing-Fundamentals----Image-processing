@@ -1,11 +1,10 @@
-# It should not be required to change this code
+
 import torch
 import tqdm
 import utils
 import collections
 
 torch.random.manual_seed(0)
-
 
 class Trainer:
 
@@ -35,14 +34,15 @@ class Trainer:
                               desc=f"Training epoch {epoch}")):
                 # images has shape: [batch_size, 1, 28, 28]
                 # target has shape: [batch_size]
-
+                images, target = utils.to_cuda([images, target])
                 # Perform forward pass
                 logits = self.model(images)
+                
 
                 # Compute loss
                 loss = self.loss_function(logits, target)
 
-                avg_loss += loss.detach().item()
+                avg_loss += loss.cpu().detach().item()
                 # Perform backpropagation
                 loss.backward()
 
