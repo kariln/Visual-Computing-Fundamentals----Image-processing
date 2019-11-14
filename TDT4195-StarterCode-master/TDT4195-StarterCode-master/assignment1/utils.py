@@ -2,7 +2,7 @@
 import torch
 import matplotlib.pyplot as plt
 
-
+#%%
 def compute_loss_and_accuracy(dataloader, model, loss_function):
     """
     Computes the total loss and accuracy over the whole dataloader

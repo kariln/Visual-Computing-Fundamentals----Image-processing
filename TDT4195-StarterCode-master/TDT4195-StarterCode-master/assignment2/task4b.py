@@ -1,44 +1,54 @@
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 import numpy as np
 import skimage
 import utils
 
 
 
-
 def convolve_im(im: np.array,
                 kernel: np.array,
                 verbose=True):
-    """ Convolves the image (im) with the spatial kernel (kernel),
+    """ Convolves the image (im) with the kernel (kernel),
         and returns the resulting image.
 
         "verbose" can be used for visualizing different parts of the 
-        convolution.
-        
-        Note: kernel can be of different shape than im.
+        convolution
 
     Args:
         im: np.array of shape [H, W]
-        kernel: np.array of shape [K, K] 
+        kernel: np.array of shape [h, w] 
         verbose: bool
     Returns:
         im: np.array of shape [H, W]
     """
-    ### START YOUR CODE HERE ### (You can change anything inside this block)
-
-    conv_result = im
+	
+    ### START YOUR CODE HERE ### (You can change anything inside this block) 
+	
+    H,W = np.shape(im)
+    h,w = np.shape(kernel)
+    t_b = (H-h)//2
+    l_r = (W-w)//2
+    kernel_padded = np.pad(kernel, ((t_b, t_b+1),(l_r, l_r+1)), 'constant')
+    kernel_padded = np.pad(kernel, ((0, 2*t_b+1),(0, 2*l_r+1)), 'constant')
+    fft_kernel = np.fft.fft2(kernel_padded, s=None, axes=(-2, -1), norm=None)
+    
+       
+    im_fft = np.fft.fft2(im, s=None, axes=(-2, -1), norm=None)    
+    im_filt = im_fft*fft_kernel    
+    conv_result = np.fft.ifft2(im_filt, s=None, axes=(-2, -1), norm=None).real    
 
     if verbose:
         # Use plt.subplot to place two or more images beside eachother
-        plt.figure(figsize=(20, 4))
+        plt.figure(figsize=(12, 4))
         # plt.subplot(num_rows, num_cols, position (1-indexed))
-        plt.subplot(1, 5, 1)
+        plt.subplot(1, 2, 1)
         plt.imshow(im, cmap="gray")
-        plt.subplot(1, 5, 5)
+        plt.subplot(1, 2, 2) 
         plt.imshow(conv_result, cmap="gray")
+
     ### END YOUR CODE HERE ###
     return conv_result
-
 
 if __name__ == "__main__":
     verbose = True  # change if you want
@@ -70,3 +80,24 @@ if __name__ == "__main__":
 
     utils.save_im("camera_gaussian.png", image_gaussian)
     utils.save_im("camera_sobelx.png", image_sobelx)
+
+
+    plt.figure(figsize=(20, 5))
+    plt.subplot(1, 3, 1)
+    f_im = np.fft.fftshift(np.fft.fft2(im, s=None, axes=(-2, -1), norm=None))
+    plt.imshow(np.abs(f_im), norm=LogNorm(vmin=1, vmax = 1000),  aspect='auto')
+    plt.colorbar()   
+    plt.title('Image')
+	
+    plt.subplot(1, 3, 2)
+    f_im = np.fft.fftshift(np.fft.fft2(image_gaussian, s=None, axes=(-2, -1), norm=None))
+    plt.imshow(np.abs(f_im), norm=LogNorm(vmin=1, vmax = 1000),  aspect='auto')
+    plt.colorbar()   
+    plt.title('Gaussian')
+	
+    plt.subplot(1, 3, 3)
+    f_im = np.fft.fftshift(np.fft.fft2(image_sobelx, s=None, axes=(-2, -1), norm=None))
+    plt.imshow(np.abs(f_im), norm=LogNorm(vmin=1, vmax = 1000),  aspect='auto')
+    plt.colorbar()   
+    plt.title('Sobel')
+	
