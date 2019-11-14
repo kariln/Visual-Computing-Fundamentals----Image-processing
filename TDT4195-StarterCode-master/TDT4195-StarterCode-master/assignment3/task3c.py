@@ -1,6 +1,6 @@
 import utils
 import skimage
-import skimage.morphology
+from skimage.morphology import *
 import numpy as np
 
 
@@ -20,8 +20,10 @@ def extract_boundary(im: np.ndarray) -> np.ndarray:
         [1, 1, 1],
         [1, 1, 1]
     ], dtype=bool)
-    boundary = im
-    return boundary
+	
+    eroded = binary_erosion(im, selem=structuring_element)
+    boundary = im.astype(int) - eroded
+    return boundary.astype(bool)
     ### END YOUR CODE HERE ### 
 
 

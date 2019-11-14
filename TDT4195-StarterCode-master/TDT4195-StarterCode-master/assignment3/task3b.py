@@ -1,6 +1,6 @@
 import utils
 import skimage
-import skimage.morphology
+from skimage.morphology import *
 import numpy as np
 from task3a import remove_noise
 
@@ -22,7 +22,18 @@ def distance_transform(im: np.ndarray) -> np.ndarray:
         [1, 1, 1],
         [1, 1, 1]
     ], dtype=bool)
-    result = im.astype(np.int32)
+	
+    #sh = disk(10)
+    res = np.zeros_like(im, dtype = np.int32)
+	
+    while np.any(im != 0):   
+        res = res + (im != 0) 
+        im = binary_erosion(im, selem=structuring_element) 
+		   
+		
+ 
+	
+    result = res.astype(np.int32)
     return result
     ### END YOUR CODE HERE ### 
 

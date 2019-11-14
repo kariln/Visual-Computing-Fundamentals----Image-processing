@@ -1,6 +1,6 @@
 import utils
 import skimage
-import skimage.morphology
+from skimage.morphology import *
 import numpy as np
 
 
@@ -14,6 +14,12 @@ def remove_noise(im: np.ndarray) -> np.ndarray:
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
     # You can also define other helper functions
+	
+    sh = disk(10)
+    binary_closing(im, selem=sh, out = im)
+    binary_opening(im, selem=sh, out = im)
+#    im = binary_erosion(im, selem=sh) 
+#    im = binary_dilation(im, selem=sh)
     return im
     ### END YOUR CODE HERE ### 
 
