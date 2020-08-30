@@ -2,6 +2,32 @@ import utils
 import numpy as np
 
 
+def position_check(im,x,y):
+    #finds the size of the image, height - H, width -W
+    (H,W) = im.shape
+    
+    #checks if the seed_point is within the image
+    for i in range(x-1,x+2):
+        for j in range(y-1,y+2):
+            x_bol = (i < W) and (i >= 0)
+            y_bol = (j < H) and (j >= 0)
+            centre = (i == x) and (j == y)
+    if (x_bol and y_bol and not centre):
+        return True
+    else:
+        return False
+
+def neighbourhood(im, segmented,x,y,T):
+    for i in range(x-1,x+2):
+        for j in range(y-1,y+2):
+            if position_check(im,i,j):
+                #threshold, T, as homogeneity criteria (defines the maximum absolute difference in intensty between seed point and pixel)
+                intensity_bol = (np.abs(im[i,j] - im[x,y]) <= T)
+                if not segmented[i,j] and intensity_bol:
+                    segmented[i,j] = True
+                    #segments recursively
+                    neighbourhood(im,segmented,i,j,T)
+
 def region_growing(im: np.ndarray, seed_points: list, T: int) -> np.ndarray:
     """
         A region growing algorithm that segments an image into 1 or 0 (True or False).
@@ -22,8 +48,11 @@ def region_growing(im: np.ndarray, seed_points: list, T: int) -> np.ndarray:
     segmented = np.zeros_like(im).astype(bool)
     for row, col in seed_points:
         segmented[row, col] = True
+        neighbourhood(im, segmented,row,col,T)
+        
     return segmented
     ### END YOUR CODE HERE ### 
+
 
 
 
